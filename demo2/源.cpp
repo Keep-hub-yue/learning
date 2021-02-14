@@ -1,18 +1,241 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 #include<malloc.h>
+/*
+-----------------------------------
+     队列 （链式结构）
+-----------------------------------
+*/
+typedef struct LNode{
+	int data;
+	struct LNode *next;
+}LinkNode;
+typedef struct {
+	LinkNode *front, *rear;
+}LinkQueue;
+void InitQueue(LinkQueue &Q)//带头结点初始化
+{
+	Q.front = Q.rear = (LinkNode*)malloc(sizeof(LinkNode));
+	Q.front->next = NULL;
+}
+bool QueueEmpty(LinkQueue Q)
+{
+	if (Q.front == Q.rear)
+		return true;
+	return false;
+}
+
+
+
+
+int main()//测试
+{
+	LinkQueue Q;
+	return 0;
+}
+
+
+
+/*
+----------------------------------------
+     队列（顺序结构）
+----------------------------------------
+*/
+/*
+// 队列只允许在一端插入 另一端删除的线性表
+//First In First Out (FIFO) 先进先出  只能在队尾插入，对头删除
+//队列元素个数  （Q.rear + MaxSize - Q.front ）% MaxSize 
+//若不浪费一个存储空间 可以设置一个变量size 每次删除 都执行 size-- 
+//每次插入元素 都执行 size++ 利用size 判断队是否为空和满
+//也可以设置 一个变量 tag 每次插入 执行tag = 1；每次删除 执行 tag = 0；Q.front = Q.rear && tag = 1;为满；
+//... && tag = 0;为空 
+
+//若初始化时 Q.rear 指向当前元素 则 Q.rear 指向 MaxSize - 1
+#define MaxSize 10
+typedef struct {
+	int data[MaxSize];//静态数组存放数据
+	int front, rear;
+}SqQueue;
+void InitQueue(SqQueue&Q)
+{//初始化 使对头指针和队尾指针都指向0
+	Q.front = Q.rear = 0;
+}
+bool QueueEmpty(SqQueue Q)
+{
+	if (Q.front == Q.rear)
+		return true;
+	return false;
+ }
+bool EnQueue(SqQueue&Q, int x)
+{
+	if (Q.front == (Q.rear + 1) % MaxSize)//队列已满， 取模运算实现逻辑上的循环结构
+		return false;
+	Q.data[Q.rear] = x;
+	Q.rear = (Q.rear + 1) % MaxSize;
+	return true;
+}
+bool DeQueue(SqQueue&Q, int&x)//出队操作
+{
+	if (Q.front == Q.rear)
+		return false;
+	x = Q.data[Q.front];
+	Q.front = (Q.front + 1) % MaxSize;
+	return true;
+}
+bool GetHead(SqQueue Q, int &x)
+{
+	if (Q.front == Q.rear)
+		return false;
+	x = Q.data[Q.front];
+	return true;
+}
+*/
+
+
+
+/*
+----------------------------------------
+      链栈（链式存储结构）
+----------------------------------------
+*/
+/*
+typedef struct LinkNode {
+	int data;
+	struct LinkNode *next;
+}*LiStack;
+
+void InitStack(LiStack &S)//带头结点 初始化
+{
+	S = (LinkNode*)malloc(sizeof(LinkNode));
+	S->next = NULL;
+}
+
+bool StackEmpty(LiStack &S)//判断是否为空
+{
+	if (S->next == NULL)
+		return true;
+	else
+		return false;
+}
+
+bool Push(LiStack&S, int x)//进栈
+{
+	LinkNode* s = (LinkNode*)malloc(sizeof(LinkNode));
+	if (s == NULL)
+		return false;
+	s->data = x;
+	s->next = S->next;
+	S->next = s;
+	return true;
+}
+
+bool Pop(LiStack&S, int &x)// 出栈
+{
+	if (S->next == NULL)
+		return false;
+	LinkNode*q = S->next;
+	x = S->data;
+	S->next = q->next;
+	free(q);
+	return true;
+}
+
+bool GetTop(LiStack&S, int &x)//读取栈顶元素
+{
+	if (S->next == NULL)
+		return false;
+	x = S->data;
+	return true;
+}
+*/
+
+
+
+/*
+------------------------------------------
+           栈 Stack （顺序栈）
+------------------------------------------
+*/
+/*
+//只允许在一端进行插入和删除
+//Last In first Out (LIFO)后进先出
+
+// 顺序栈
+
+#define MaxSize 10
+typedef struct {              //顺序栈 静态创建
+	int data[MaxSize];
+	int top;                //栈顶指针
+}SqStack;
+typedef struct {        //共享栈 
+	int data[MaxSize]; // 栈满条件 top0 + 1 = top1 ；
+	int top0;
+	int top1;
+}ShStack;
+
+
+
+void InitStack(SqStack &S)//初始化，也可以S.top = 0；后续进栈 出栈 读取栈顶 代码都需相应变化
+{
+	S.top = -1;
+}
+bool StackEmpty(SqStack S)//判断栈是否为空
+{
+	if (S.top == -1)
+		return true;
+	else
+		return false;
+}
+
+bool Push(SqStack &S, int x)//进栈
+{
+	if (S.top == MaxSize - 1)
+		return false;
+	S.data[++S.top] = x;
+	return true;
+}
+
+bool Pop(SqStack &S, int &x)//出栈
+{
+	if (S.top == -1)
+		return false;
+	x = S.data[S.top--];
+	return true;
+}
+
+bool GetTop(SqStack S, int &x)//读取栈顶
+{
+	if (S.top == -1)
+		return false;
+	x = S.data[S.top];
+	return true;
+}
+*/
+
+
 
 /*
 ---------------------------------------
                静态链表
 ---------------------------------------
 */
+/*
 #define MAxSize 10 
 typedef struct {
-	int data[MAxSize];
-	int 
-};
+	int data;
+	int next;
+}SLinkList[MAxSize];
 
+
+
+int main(void)
+{
+	SLinkList L;
+
+	printf("%d\n", sizeof(L));
+	return 0;
+}
+*/
 
 
 
@@ -394,12 +617,6 @@ int main(void)
 
 
 
-
-
-
-
-
-
 /*
 -------------------------------
 单链表的建立(尾插法)带头结点
@@ -491,7 +708,7 @@ int main(void)
 	} while (e != k);////利用链表的插入，实现尾插 但是时间复杂度高O(n2)
 	printf("链表内容如下：\n");
 	Output(&L);
-	//64-73行可以封装成一个函数 
+	//64-73行可以封装成一个工具函数 
 	return 0;
 }
 */
