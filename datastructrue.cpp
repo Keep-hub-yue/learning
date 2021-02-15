@@ -2,10 +2,21 @@
 #include<stdio.h>
 #include<malloc.h>
 /*
+-------------------------------------------
+   栈的应用 —— 表达式求值
+-------------------------------------------
+*/
+ 
+
+
+
+
+/*
 ---------------------------------------
    栈的应用——括号匹配
 ---------------------------------------
 */
+/*
 #define MaxSize 10
 typedef struct {
 	char data[MaxSize];
@@ -45,9 +56,9 @@ bool BracketCheck(char str[], int length)
 	InitStack(S);
 	for (int i = 0; i < length; ++i)
 	{
-		if (str[i] == '(' || str[i] == '[' || str[i] == '{')
+		if (str[i] == '(' || str[i] == '[' || str[i] == '{')//扫描到左括号情况 直接入栈
 			Push(S, str[i]);
-		else
+		else//右括号情况，1、栈为空 2、栈不为空
 		{
 			if (StackEmpty(S))
 				return false;
@@ -84,7 +95,7 @@ int main(void) // 测试
 	return 0;
 
 }//运行通过
-
+*/
 
 /*
 --------------------------------------

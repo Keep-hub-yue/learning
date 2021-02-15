@@ -1,5 +1,9 @@
 # learning
 be used to learn
+learning - datastructure
 first 
-     to learn datastructrue
-	 meybe it is wonderful!
+     to learn datastructure knowledge
+	 maeybe it is wonderful!
+second
+     the code only one head file 
+	 maybe some mistakes sorry
