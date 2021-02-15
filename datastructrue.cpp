@@ -2,11 +2,107 @@
 #include<stdio.h>
 #include<malloc.h>
 /*
+---------------------------------------
+   栈的应用——括号匹配
+---------------------------------------
+*/
+#define MaxSize 10
+typedef struct {
+	char data[MaxSize];
+	int top;
+}SqStack;
+
+void InitStack(SqStack &S)
+{
+	S.top = -1;
+}
+
+bool StackEmpty(SqStack S)
+{
+	if (S.top == -1)
+		return true;
+	return false;
+}
+
+bool Push(SqStack &S, char x)
+{
+	if (S.top == MaxSize - 1)//栈满
+		return false;
+	S.data[++S.top] = x;
+	return true;
+}
+
+bool Pop(SqStack &S, char &x)
+{
+	if (S.top == -1)//栈空
+		return false;
+	x = S.data[S.top--];
+	return true;
+}
+bool BracketCheck(char str[], int length)
+{
+	SqStack S;
+	InitStack(S);
+	for (int i = 0; i < length; ++i)
+	{
+		if (str[i] == '(' || str[i] == '[' || str[i] == '{')
+			Push(S, str[i]);
+		else
+		{
+			if (StackEmpty(S))
+				return false;
+			char topelem;
+			Pop(S, topelem);
+			if (str[i] == ')' && topelem != '(')
+				return false;
+			if (str[i] == ']' && topelem != '[')
+				return false;
+			if (str[i] == '}' && topelem != '{')
+				return false;
+		}
+	}
+	return StackEmpty(S);
+}
+
+int main(void) // 测试
+{
+	char str1[] = { '(','(','{','}',')',')','[',']'};
+	char str2[] = { '(','(','{','}',')',')','[','{' };
+	char str3[] = { '(','(','{','}',')',')','[',']',')' };
+	if (BracketCheck(str1,8))
+		printf("匹配\n");
+	else
+		printf("不匹配\n");
+	if (BracketCheck(str2,8))
+		printf("匹配\n");
+	else
+		printf("不匹配\n");
+	if (BracketCheck(str3,9))
+		printf("匹配\n");
+	else
+		printf("不匹配\n");
+	return 0;
+
+}//运行通过
+
+
+/*
+--------------------------------------
+       双端链表
+--------------------------------------
+*/
+// 栈：只允许一端插入和删除的线性表
+// 队列：只允许一端插入 另一端删除的线性表
+//双端队列：允许两端插入和两端删除的线性表
+//此外还 输入受限的双端队列 和输出受限的双端队列
+
+
+/*
 ------------------------------------
    队列（链式结构）不带头结点
 ------------------------------------
 */
-
+/*
 typedef struct LNode {
 	int data;
 	struct LNode *next;
@@ -47,7 +143,7 @@ bool DeQueue(LinkQueue &Q, int &x)
 	free(q);
 	return true;
 }
-
+*/
 
 
 
