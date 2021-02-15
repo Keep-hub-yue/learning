@@ -2,10 +2,63 @@
 #include<stdio.h>
 #include<malloc.h>
 /*
+------------------------------------
+   队列（链式结构）不带头结点
+------------------------------------
+*/
+
+typedef struct LNode {
+	int data;
+	struct LNode *next;
+}LinkNode;
+typedef struct {
+	LinkNode *front, *rear;
+}LinkQueue;
+void InitQueue(LinkQueue &Q)
+{
+	Q.front = Q.rear = NULL;
+}
+
+void EnQueue(LinkQueue &Q, int x)
+{
+	LinkNode *s = (LinkNode*)malloc(sizeof(LinkNode));
+	s->data = x;
+	s->next = NULL;
+	if (Q.front == NULL)
+	{
+		Q.front = s;
+		Q.rear = s;
+	}
+	else
+	{
+		Q.rear->next = s;
+		Q.rear = s;
+	}
+}
+bool DeQueue(LinkQueue &Q, int &x)
+{
+	if (Q.front == Q.rear && Q.front == NULL)// 空队
+		return false;
+	LinkNode *q = Q.front;
+	x = q->data;	
+	Q.front = q->next;
+	if (Q.rear == q)
+		Q.front = Q.rear = NULL;
+	free(q);
+	return true;
+}
+
+
+
+
+
+
+/*
 -----------------------------------
-	 队列 （链式结构）
+	 队列 （链式结构）带头结点
 -----------------------------------
 */
+/*
 typedef struct LNode {
 	int data;
 	struct LNode *next;
@@ -24,15 +77,28 @@ bool QueueEmpty(LinkQueue Q)
 		return true;
 	return false;
 }
-
-
-
-
-int main()//测试
+void EnQueue(LinkQueue &Q, int x) //入队操作 *** 可以定义成bool型，考虑边际条件 
 {
-	LinkQueue Q;
-	return 0;
+	LinkNode * s = (LinkNode*)malloc(sizeof(LinkNode));
+	s->data = x;
+	s->next = NULL;
+	Q.rear->next = s;
+	Q.rear = s;
 }
+bool DeQueue(LinkQueue &Q, int &x) // 出队操作
+{
+	if (Q.front == Q.rear)
+		return false;
+	LinkNode *q = Q.front->next;
+	x = q->data;
+	Q.front = q->next;
+	if (Q.rear == q)//删除最后一个结点
+		Q.rear = Q.front;
+	free(q);
+	return true;
+}
+*/
+
 
 
 
