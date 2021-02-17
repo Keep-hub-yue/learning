@@ -1,13 +1,107 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
+#include<stdlib.h>
 #include<malloc.h>
 /*
 -------------------------------------------
    栈的应用 —— 表达式求值
 -------------------------------------------
 */
- 
+#define MaxSize 50
 
+typedef struct {//运算符栈
+	char data[MaxSize];
+	int top;
+}op;
+typedef	 struct {
+	float data[MaxSize];
+	int top;
+}st;
+float eva(float a, float b, char ch)
+{
+	switch (ch)
+	{
+	case'+':
+		return a + b;
+	case'-':
+		return a - b;
+	case'/':
+		return a / b;
+	case'*':
+		return a * b;
+	}
+}
+
+float EvaluateExpression(char exp[])
+{
+	op ch;
+	st num;
+	float a, b;
+	ch.top = -1; //初始化 ch
+	num.top = -1;
+	for (int i = 0; exp[i] != '\0'; i++)
+	{
+		switch (exp[i])
+		{
+		case '(':
+			ch.data[++ch.top] = exp[i]; break;
+		case ')':
+			while (ch.data[ch.top] != '(')
+			{
+				b = num.data[num.top--];
+				a = num.data[num.top--];
+				num.data[++num.top] = eva(a, b, ch.data[ch.top--]);
+			}
+			ch.top--;
+			break;
+		case'+':
+		case'-':
+
+			if (ch.data[ch.top] == '*' || ch.data[ch.top] == '/' || ch.data[ch.top] == '+' || ch.data[ch.top] == '-')
+			{
+				b = num.data[num.top--];
+				a = num.data[num.top--];
+				num.data[++num.top] = eva(a, b, ch.data[ch.top--]);
+				ch.data[++ch.top] = exp[i];
+			}
+			else
+				ch.data[++ch.top] = exp[i]; break;
+
+		case'*':
+		case'/':
+			if (ch.data[ch.top] == '*' || ch.data[ch.top] == '/')
+			{
+				b = num.data[num.top--];
+				a = num.data[num.top--];
+				num.data[++num.top] = eva(a, b, ch.data[ch.top--]);
+				ch.data[++ch.top] = exp[i];
+			}
+			else
+				ch.data[++ch.top] = exp[i]; break;
+		default:
+			num.data[++num.top] = (float)(exp[i] - '0');
+			for (int j = i + 1; exp[j] != ')'&& exp[j] != '+'&& exp[j] != '-'&& exp[j] != '*'&&exp[j] != '/'; ++j)
+			{
+				num.data[num.top] = 10 * num.data[num.top] + (exp[j] - '0');
+				i++;
+			}
+
+		}
+	}
+	while (ch.top != -1)
+	{
+		b = num.data[num.top--];
+		a = num.data[num.top--];
+		num.data[++num.top] = eva(a, b, ch.data[ch.top--]);
+	}
+	return num.data[num.top];
+}
+int main()
+{
+	char exp[100] = "23-45*23/(78-56)";
+	printf("%.2f\n", EvaluateExpression(exp));
+	return 0;
+}
 
 
 
@@ -96,6 +190,10 @@ int main(void) // 测试
 
 }//运行通过
 */
+
+
+
+
 
 /*
 --------------------------------------

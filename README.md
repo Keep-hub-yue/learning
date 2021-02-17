@@ -7,3 +7,5 @@ first
 second
      the code only one head file 
 	 maybe some mistakes sorry
+third
+     int equal to ElemType
