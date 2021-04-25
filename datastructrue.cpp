@@ -2,11 +2,395 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<malloc.h>
+
+/*
+-----------------------------
+		线序线索化
+-----------------------------
+*/
+
+typedef struct Threadnode {
+	int data;
+	Threadnode *lchild, *rchild;
+	int ltag, rtag;
+}Threadnode,*ThreadTree;
+
+void visit(Threadnode *q, Threadnode* &pre)
+{
+	if (!q->lchild)
+	{
+		q->lchild = pre;
+		q->ltag = 1;
+	}
+	if (pre && !pre->rchild)
+	{
+		pre->rchild = q;
+		pre->rtag = 1;
+	}
+	pre = q;
+}
+void PreThread(ThreadTree T,Threadnode* &pre )//先序遍历，同时进行线索化。
+{
+	if (T)
+	{
+		visit(T,pre	);
+		if (T->ltag == 0)
+			PreThread(T->lchild,pre);
+		PreThread(T->rchild,pre);
+	}
+}
+void CreateThreadTree(ThreadTree T)
+{
+	Threadnode *pre = NULL;
+	if (T)
+		PreThread(T,pre);
+	if (!pre->rchild)
+		pre->rtag = 1;
+		
+}
+
+
+/*
+------------------------------------
+		线索二叉树
+------------------------------------
+*/
+/*查找目标结点的中序前驱*/
+/*
+typedef struct BiTnode {
+	int data;
+	BiTnode *lchild, *rchild;
+}BiTnode,*Bitree;
+
+//BiTnode *p;//指向目标结点
+//BiTnode *pre = NULL;//指向当前访问结点的前驱
+//BiTnode	 *final = NULL;//记录最终的结果
+
+void visit(BiTnode *q)//找到指定结点的前驱操作（递归算法中的visit函数）
+{
+	if (q == p)
+		final = pre;
+	else
+		pre = q;
+}
+//中序遍历
+void inorder(Bitree T)
+{
+	if (T)
+	{
+		inorder(T->lchild);
+		visit(T);//对visit函数的修改，可以实现不同的目的
+		inorder(T->rchild);
+	}
+}
+*/
+/*中序线索化*/
+/*
+typedef struct ThreadNode {
+	int data;
+	ThreadNode *lchild, *rchild;
+	int ltag, rtag;
+}ThreadNode,*ThreadTree;
+
+ThreadNode *pre = NULL;
+
+void Visit(ThreadNode *q)
+{
+	if (!q->lchild)
+	{
+		q->lchild = pre;
+		q->ltag = 1;
+	}
+	if (pre && !pre->rchild)
+	{
+		pre->rchild = q;
+		pre->rtag = 1;
+	}
+	pre = q;
+}
+
+void inThread(ThreadTree T)
+{
+	if (T)
+	{
+		inThread(T->lchild);
+		Visit(T);
+		inThread(T->rchild);
+	}
+}
+
+void CreatThread(ThreadTree T)
+{
+	inThread(T);
+	pre->rchild = NULL;//访问最后一个结点时，其并不存在右子树，并不会再一次调用Visit函数。故需要对最后一个结点进行单独处理。
+	pre->rtag = 1;
+}
+*/
+/*
+---------------------------------------
+              树(二叉树)
+--------------------------------------
+*/
+//定义树的结点（顺序存储）
+//struct TreeNode {
+//	int value;
+//	bool isempty;
+//};
+
+//int main(void)
+//{
+//	TreeNode T[100];//第一个位置可以空置
+//	for (int i = 0;i<100;++i)//初始化
+//	{
+//		T[i].isempty = true;
+//	}
+	/* 
+	------------------------------------
+	数据元素的标号与完全二叉树的对应；
+	用下标表示数据之间的逻辑关系：
+	i元素的  左孩子 为2i
+			右孩子 为2i+1
+		双亲结点为 i/2向下取整
+		层次也可以计算得来
+
+
+		顺序存储结构只适合存储完全二叉树
+	*/
+// 链式存储
+/*
+typedef struct BiTNode {
+	int data;//数据域
+	BiTNode *lchild, *rchild;//左右孩子指针
+}BiTNode,*BiTree;
+//找到一个结点的孩子结点很简单，寻找父节点需要对二叉树进行遍历
+//若经常用到父结点，可以在定义结点时加入父结点指针。（三叉链表）
+int main()
+{
+	BiTree root = NULL;//定义一个树
+
+	root = (BiTNode *)malloc(sizeof(BiTNode));//插入根结点。
+	root->data = 1;
+	root->lchild = NULL;
+	root->rchild = NULL;
+
+	BiTNode*p = (BiTNode*)malloc(sizeof(BiTNode));//插入新结点
+	p->data = 2;
+	p->lchild = NULL;
+	p->rchild = NULL;
+	root->lchild = p;//插入在左孩子位置。
+
+}
+*/
+/* 二叉树的遍历*/
+/*
+void visit(BiTree T);
+//先序遍历
+void Preorder(BiTree T)
+{
+	if (T) {
+		visit(T);
+		Preorder(T->lchild);
+		Preorder(T->rchild);
+	}
+}
+//中序遍历
+void Inorder(BiTree T)
+{
+	if (T)
+	{
+		Inorder(T->lchild);
+		visit(T);
+		Inorder(T->rchild);
+	}
+}
+//后序遍历
+void Posorder(BiTree T)
+{
+	Posorder(T->lchild);
+	Posorder(T->rchild);
+	visit(T);
+}
+//求树的深度
+int TreeDepth(BiTree T)
+{
+	if (!T)
+		return 0;
+	else
+	{
+		int l = TreeDepth(T->lchild);
+		int r = TreeDepth(T->rchild);
+		return l > r ? l + 1 : r + 1;
+	}
+}
+*/
+//层次遍历
+/*
+利用辅助队列，先将根结点入队
+若队列非空，则对头结点出队，并将其左右孩子结点依次入队（如果存在）
+重复上一步至队列为空。
+*/
+/*
+void Levelordder()
+{
+	...;//省略队列相关代码
+	while (!isempty)
+	{
+		DeQueue(Q, p);//队列内保存指针
+		visit(p);
+		if (p->lchild)
+			Enqueue(Q, p->lchild);
+		if (p->rchild)
+			Enqueue(Q, p->rchild);
+	}
+
+}
+*/
+
+/*
+---------------------------------------------
+             KMP算法
+---------------------------------------------
+*/
+/*
+#define MANSIze 10
+typedef struct {
+	char ch[MANSIze];//静态创建
+	int length ;
+}SString;
+//求next数组
+void Get_next(SString T,int next[])
+{
+	int i = 1, j = 0;
+	next[1] = 0;
+	while (i < T.length)
+	{
+		if (j == 0 || T.ch[i] == T.ch[j])
+		{
+			++i;
+			++j;
+			next[i] = j;
+		}
+		else
+			j = next[j];
+	}
+}
+
+//KMp 算法优化 若出现不匹配时，回溯的字符（T.ch[next[j]]）与当前字符（T.ch[j]）一样 nextval[j] = nextval[next[j]];
+
+void Get_nextval(int nextval[])
+{
+	int next[T.length + 1];
+	Get_next(T, next);
+	int nextval[T.length + 1];
+	nextval[1] = 0;
+	for (int j = 2; j <= T.length + 1; ++j)
+	{
+		if (T.ch[j] == T.ch[next[j]])
+			nextval[j] = nextval[next[j]];
+		else
+			nextval[j] = next[j];
+	}
+}
+
+
+int Index_KMP(SString S, SString T)
+{
+	int i = 1, j = 1;
+	int next[T.length+1];
+	Get_next(T, next);
+	while ( i <= S.length && j <= T.length)
+	{
+		if (j == 0 || S.ch[i] == T.ch[j])
+		{
+			++i;
+			++j;
+		}
+		else
+		{
+			j = next[j];
+		}
+		
+	}
+	if (j > T.length)
+		return i - T.length;
+	else
+		return 0;
+}
+*/
+
+/*
+--------------------------------------------
+	          串
+--------------------------------------------
+*/
+/*
+#define MANSIze 10
+typedef struct {
+	char ch[MANSIze];//静态创建
+	int length;
+}SString;
+
+void StrAsign(SString &S,char ch[])//赋值 初始化
+{	
+	int i = 1;
+	for (; ch[i - 1] != '\0'; ++i)
+	{
+		S.ch[i] = ch[i - 1];
+	}
+	S.length = i-1;
+}
+
+bool SubString(SString &Sub, SString T, int pos, int len)//求子串
+{
+	if (T.length - pos + 1 < len)
+		return false;
+	for (int i = pos; i - pos < len; ++i)
+	{
+		Sub.ch[i - pos + 1] = T.ch[i];
+	}
+	Sub.length = len;
+	return true;
+}
+
+int StrCompare(SString S, SString T)//字符串比较
+{
+	for (int i = 1; i <= S.length && i <= T.length; ++i)
+	{
+		if (S.ch[i] != T.ch[i])
+			return S.ch[i] - T.ch[i];
+	}
+	return S.length - T.length;
+}
+
+int Index(SString S, SString T)//定位子串位置，返回第一次出现的位置。
+{	
+	SString Sub;
+	for (int i = 1; S.length - i >= T.length; ++i)
+	{
+		SubString(Sub, S, i, T.length);
+		if (StrCompare(Sub, T) == 0)
+			return i;//返回子串位置
+	}
+	return 0;//没有子串
+}
+
+int main()
+{
+	SString S;
+	SString T;
+	StrAsign(S, "wangdao");
+	StrAsign(T, "gda");
+	printf("子串位于%d\n", Index(S, T));
+
+	return 0;
+}
+*/
 /*
 -------------------------------------------
    栈的应用 —— 表达式求值
 -------------------------------------------
 */
+/*
 #define MaxSize 50
 
 typedef struct {//运算符栈
@@ -52,8 +436,7 @@ float EvaluateExpression(char exp[])
 				a = num.data[num.top--];
 				num.data[++num.top] = eva(a, b, ch.data[ch.top--]);
 			}
-			ch.top--;
-			break;
+			ch.top--; break;			
 		case'+':
 		case'-':
 
@@ -96,13 +479,13 @@ float EvaluateExpression(char exp[])
 	}
 	return num.data[num.top];
 }
-int main()
+int main()//测试通过
 {
 	char exp[100] = "23-45*23/(78-56)";
 	printf("%.2f\n", EvaluateExpression(exp));
 	return 0;
 }
-
+*/
 
 
 /*
