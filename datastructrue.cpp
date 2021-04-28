@@ -5,7 +5,7 @@
 
 /*
 -----------------------------
-		线序线索化
+		先序线索化
 -----------------------------
 */
 
@@ -15,7 +15,7 @@ typedef struct Threadnode {
 	int ltag, rtag;
 }Threadnode,*ThreadTree;
 
-void visit(Threadnode *q, Threadnode* &pre)
+void visit(Threadnode *q, Threadnode* &pre)//利用P 和pre 将有空指针的结点线索化
 {
 	if (!q->lchild)
 	{
@@ -34,7 +34,7 @@ void PreThread(ThreadTree T,Threadnode* &pre )//先序遍历，同时进行线索化。
 	if (T)
 	{
 		visit(T,pre	);
-		if (T->ltag == 0)
+		if (T->ltag == 0)//避免出现死循环
 			PreThread(T->lchild,pre);
 		PreThread(T->rchild,pre);
 	}
@@ -44,11 +44,53 @@ void CreateThreadTree(ThreadTree T)
 	Threadnode *pre = NULL;
 	if (T)
 		PreThread(T,pre);
-	if (!pre->rchild)
+	if (!pre->rchild)//处理最后一个结点
 		pre->rtag = 1;
 		
 }
+/*在中序线索二叉树中找前驱和后继*/
+/*
+------------------------------------------------------
+	在中序线索二叉树中可以找到指点结点的前驱和后继
+	（不使用土办法，即不用重新遍历二叉树）
+	在先序线索二叉树中只能找到后继；在后序线索二叉树中
+	只能找到前驱。
+-----------------------------------------------------
+*/
+//找后继
+Threadnode* firstnode(Threadnode* q)//找到中序遍历第一个访问的结点。
+{
+	while (q->ltag == 0)
+		q = q->lchild;
+	return q;
+}
 
+Threadnode* nextnode(Threadnode* q)
+{
+	if (q->rtag == 1)
+		return q->rchild;
+	else
+		return firstnode(q->rchild);
+}
+
+//对二叉线索树的遍历；非递归
+void inorder(ThreadTree T)
+{
+	for (Threadnode*p = firstnode(T); !p; nextnode(p))
+		...;//实现对p的访问操作
+}
+//找前驱
+Threadnode* nextnode1(Threadnode *q)
+{
+	if (q->ltag == 1)
+		return q->lchild;
+	else
+	{
+		while (q->lchild->rtag == 0)
+			q = q->rchild;
+		return q;
+	}
+}
 
 /*
 ------------------------------------
